@@ -166,8 +166,10 @@ toList :: IntDisjointSet -> ([(Int, Int)], IntDisjointSet)
 toList set = flip runState set $ do
                xs <- state elems
                forM xs $ \x -> do
-                 Just rep <- state $ lookup x
-                 return (x, rep)
+                 mRep <- state $ lookup x
+                 case mRep of
+                   Just rep -> return (x, rep)
+                   Nothing -> error "impossible: did not find element in set"
 
 {-|
 Given an association list representing equivalences between elements,
